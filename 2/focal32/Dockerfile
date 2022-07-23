@@ -18,5 +18,5 @@ RUN dpkg --add-architecture i386 \
         libsdl2-mixer-dev:i386 \
         ninja-build \
         pkg-config:i386 \
-    && update-ca-certificates
+    && update-ca-certificates \
     && rm -rf /var/lib/apt/lists/*
