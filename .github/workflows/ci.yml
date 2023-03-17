@@ -1,8 +1,5 @@
 name: CI
 on: [push, pull_request]
-env:
-  dockerid: ${{ secrets.DOCKER_LOGIN }}
-  dockerpass: ${{ secrets.DOCKER_TOKEN }}
 jobs:
   build:
     name: Build
@@ -12,21 +9,26 @@ jobs:
       matrix:
         # Remember if you commit this, newly built images will replace those tags.
         # Prefer incrementing the version to unused one
-        tag: [5-bionic32, 5-mingw32, 5-focal32, 5-jammy32]
+        tag: [6-bionic32, 6-mingw32, 6-focal32, 6-jammy32]
     env:
       dockertag: ${{ matrix.tag }}
+      REGISTRY: ghcr.io
     steps:
       - name: Checkout
         uses: actions/checkout@v1
       - name: Build docker image
         run: |
           ctxpath=${dockertag//-/\/}
-          docker build -t openloco/openloco:$dockertag $ctxpath
-      - name: Publish docker image
+          SLUG=$(echo ${{ github.repository_owner }}/openloco | tr '[A-Z]' '[a-z]')
+          docker build -t openloco $ctxpath
+      - name: Push image to registry
+        if: github.event_name == 'push' && github.ref_name == 'master'
         run: |
-          if [ "$dockerid" != "" ]; then
-              docker login -u "$dockerid" -p "$dockerpass"
-              docker push openloco/openloco:$dockertag
+          SLUG=$(echo ${{ github.repository_owner }}/openloco | tr '[A-Z]' '[a-z]')
+          if [ "${{ secrets.GITHUB_TOKEN }}" != "" ]; then
+              echo "${{ secrets.GITHUB_TOKEN }}" | docker login $REGISTRY -u $ --password-stdin
+              docker tag openloco $REGISTRY/$SLUG:$dockertag
+              docker push $REGISTRY/$SLUG:$dockertag
           else
               echo 'Image not pushed'
           fi
@@ -34,16 +36,20 @@ jobs:
     name: Tag images
     needs: build
     runs-on: ubuntu-latest
+    env:
+      REGISTRY: ghcr.io
     steps:
       - name: Tag docker images
+        if: github.event_name == 'push' && github.ref_name == 'master'
         run: |
-          if [ "$dockerid" != "" ]; then
-              docker login -u "$dockerid" -p "$dockerpass"
-              docker pull openloco/openloco:1-bionic32
-              docker tag openloco/openloco:1-bionic32 openloco/openloco:1
-              docker tag openloco/openloco:1-bionic32 openloco/openloco:latest
-              docker push openloco/openloco:1
-              docker push openloco/openloco:latest
+          if [ "${{ secrets.GITHUB_TOKEN }}" != "" ]; then
+              SLUG=$(echo ${{ github.repository_owner }}/openloco | tr '[A-Z]' '[a-z]')
+              echo "${{ secrets.GITHUB_TOKEN }}" | docker login $REGISTRY -u $ --password-stdin
+              docker pull $REGISTRY/$SLUG:6-bionic32
+              docker tag $REGISTRY/$SLUG:6-bionic32 $REGISTRY/$SLUG:6
+              docker tag $REGISTRY/$SLUG:6-bionic32 $REGISTRY/$SLUG:latest
+              docker push $REGISTRY/$SLUG:6
+              docker push $REGISTRY/$SLUG:latest
           else
               echo 'Images not tagged'
           fi
