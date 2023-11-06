@@ -9,7 +9,7 @@ jobs:
       matrix:
         # Remember if you commit this, newly built images will replace those tags.
         # Prefer incrementing the version to unused one
-        tag: [6-bionic32, 6-mingw32, 6-focal32, 6-jammy32]
+        tag: [7-mingw32, 7-jammy32, 7-mantic32]
     env:
       dockertag: ${{ matrix.tag }}
       REGISTRY: ghcr.io
