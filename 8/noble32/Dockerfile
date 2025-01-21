@@ -8,6 +8,7 @@ RUN dpkg --add-architecture i386 \
         ca-certificates \
         ccache \
         clang \
+        clang-tidy \
         cmake \
         g++-multilib \
         gcc-multilib \
