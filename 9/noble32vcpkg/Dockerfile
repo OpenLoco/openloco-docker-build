@@ -6,6 +6,7 @@ RUN dpkg --add-architecture i386 \
     && apt-get -y upgrade \
     && apt-get install --no-install-recommends -y \
         autoconf \
+        automake \
         ca-certificates \
         ccache \
         clang \
