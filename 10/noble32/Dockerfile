@@ -14,7 +14,6 @@ RUN dpkg --add-architecture i386 \
         gcc-multilib \
         git \
         libgtest-dev:i386 \
-        libtbb-dev:i386 \
         libopenal-dev:i386 \
         libpng-dev:i386 \
         libsdl2-dev:i386 \
