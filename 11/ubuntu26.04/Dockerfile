@@ -1,27 +1,24 @@
-FROM ubuntu:24.04
+FROM ubuntu:26.04
 
 ENV DEBIAN_FRONTEND=noninteractive
-RUN dpkg --add-architecture i386 \
-    && apt-get update \
+RUN apt-get update \
     && apt-get -y upgrade \
     && apt-get install --no-install-recommends -y \
-        autoconf \
-        autoconf-archive \
-        automake \
         ca-certificates \
         ccache \
         clang \
         clang-tidy \
         cmake \
-        curl \
         g++-multilib \
         gcc-multilib \
         git \
-        libtool \
-        make \
+        libgtest-dev \
+        libtbb-dev \
+        libopenal-dev \
+        libpng-dev \
+        libsdl3-dev \
         ninja-build \
-        zip \
-        unzip \
-        pkg-config:i386 \
+        pkg-config \
     && update-ca-certificates \
     && rm -rf /var/lib/apt/lists/*
+
