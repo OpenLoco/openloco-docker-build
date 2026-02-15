@@ -18,6 +18,7 @@ RUN dpkg --add-architecture i386 \
         gcc-multilib \
         git \
         libtool \
+        libltdl-dev \
         make \
         ninja-build \
         zip \
