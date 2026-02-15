@@ -21,6 +21,7 @@ RUN dpkg --add-architecture i386 \
         libltdl-dev \
         make \
         ninja-build \
+        python3-venv \
         zip \
         unzip \
         pkg-config:i386 \
