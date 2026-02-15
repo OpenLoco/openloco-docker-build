@@ -16,8 +16,16 @@ RUN apt-get update \
         libtbb-dev \
         libopenal-dev \
         libpng-dev \
-        libsdl3-dev \
         ninja-build \
         pkg-config \
     && update-ca-certificates \
     && rm -rf /var/lib/apt/lists/*
+RUN git clone --depth=1 https://github.com/libsdl-org/SDL.git \
+    && cd SDL \
+    && git checkout a962f40bbba175e9716557a25d5d7965f134a3d3 \
+    && mkdir build \
+    && cd build \
+    && cmake .. \
+    && cmake --build . \
+    && cmake --install .
+
